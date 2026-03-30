@@ -1,4 +1,60 @@
-import streamlit as st
+import streamlit as stimport streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# --- App Settings ---
+st.set_page_config(page_title="Shera Fitness Pro", page_icon="🏋️‍♂️", layout="wide")
+
+# --- Simple Styling (Error Free) ---
+st.markdown("### 🏃 Tera Personal Fitness Tracker")
+
+# --- Sidebar: User Profile ---
+st.sidebar.header("👤 Tera Profile")
+naam = st.sidebar.text_input("Naam:", "Shera")
+weight = st.sidebar.number_input("Wazan (kg):", 40, 200, 75)
+height = st.sidebar.number_input("Height (cm):", 100, 250, 175)
+goal_steps = st.sidebar.slider("Steps Goal:", 2000, 20000, 10000)
+
+# BMI Logic
+bmi = weight / ((height/100)**2)
+st.sidebar.info(f"Tera BMI: {bmi:.1f}")
+
+# --- Main Dashboard ---
+st.title(f"🚀 {naam}'s Fitness Command Center")
+
+# Row 1: Quick Stats
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    steps = st.number_input("Steps Chale:", 0, 50000, 5000)
+    st.metric("Total Steps", f"{steps}", f"{steps - goal_steps} vs Goal")
+
+with col2:
+    water = st.slider("Glass Paani (250ml):", 0, 20, 8)
+    st.metric("Water Intake", f"{water * 0.25}L")
+
+with col3:
+    calories_burned = steps * 0.04
+    st.metric("Burned", f"{calories_burned:.0f} kcal")
+
+# --- Progress Graph ---
+st.subheader("📊 Pichle 7 Din ki Mehnat")
+chart_data = pd.DataFrame({
+    'Din': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    'Steps': [7200, 9100, 11500, 5000, 8800, 13000, steps]
+})
+st.line_chart(chart_data.set_index('Din'))
+
+# --- Food Logger ---
+st.divider()
+st.subheader("🍎 Khane Peene ka Hisaab")
+food_item = st.text_input("Kya khaya?", "Ande aur Bread")
+if st.button("Add Meal ➕"):
+    st.success(f"{food_item} save ho gaya!")
+
+if steps >= goal_steps:
+    st.balloons()
+    st.success("Bhai tune toh phod diya! Goal Poora! 🎉")
 import pandas as pd
 import plotly.express as px
 
